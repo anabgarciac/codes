@@ -1,0 +1,54 @@
+/* MySale DataBase 2025
+Data Definition Language */
+
+-- create a new database
+-- CREATE DATABASE MySaleDB -- execute this line without comments first
+
+-- use the database MySaleDB
+USE MySaleDB
+--create a table supplier
+CREATE TABLE SUPPLIER ( 
+      SupNR CHAR(4) NOT NULL UNIQUE,
+      SupName     VARCHAR(30) NOT NULL,
+      SupAddress  VARCHAR(25),
+      SupCity     VARCHAR(15),
+      SupStatus   VARCHAR(8) NOT NULL,
+      PRIMARY KEY (SupNR) -- PK constraint after all attributes
+);
+--create table PRODUCT
+CREATE TABLE PRODUCT (
+      ProdNR      CHAR(5) PRIMARY KEY, --PK declared inline
+      ProdName    VARCHAR(30) NOT NULL,
+      ProdType    VARCHAR(15) NOT NULL,
+      Available_Quantity      INT
+);
+--create table supplier_product
+CREATE TABLE SUPPLIER_PRODUCT (
+      SupNr CHAR(4) NOT NULL,
+      ProdNr CHAR(5) NOT NULL,
+      PurchasePrice MONEY NOT NULL,
+      DeliveryMethod VARCHAR(15),
+      PRIMARY KEY (SupNr, ProdNr),
+      FOREIGN KEY (SupNr) REFERENCES SUPPLIER(SupNR)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (ProdNr) REFERENCES PRODUCT (ProdNR)
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+--create table purchase_order
+CREATE TABLE PURCHASE_ORDER (
+      PONr  INT IDENTITY NOT NULL PRIMARY KEY,
+      PODate      DATE NOT NULL,
+      SupNr CHAR(4) NOT NULL,
+      FOREIGN KEY (SupNr) REFERENCES SUPPLIER(SupNR)
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+--create table purchase order line
+CREATE TABLE PO_LINE (
+      PONr INT NOT NULL,
+      ProdNr CHAR(5) NOT NULL,
+      Quantity INT NOT NULL
+      PRIMARY KEY (PONr, ProdNr),
+      FOREIGN KEY (PONr) REFERENCES PURCHASE_ORDER(PONr)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (ProdNr) REFERENCES PRODUCT(ProdNR)
+);
